@@ -1,4 +1,5 @@
-import ossapi
+import os
+from dotenv import load_dotenv
 from ossapi import Ossapi
 import discord
 from discord.ext import commands
@@ -6,8 +7,10 @@ import mania_ur_estimator
 import taiko_ur_estimator
 import osu_ur_estimator
 
-osu_api = Ossapi(00000, "input your key here")
-discord_token = 'input your token here'
+load_dotenv()
+
+osu_api = Ossapi(int(os.getenv('OSU_ID')), os.getenv('OSU_API_KEY'))
+discord_token = os.getenv('DISCORD_TOKEN')
 
 intents = discord.Intents.default()
 intents.messages = True
@@ -86,8 +89,8 @@ async def profile(ctx, mode, user_input: str):
 
         index += 1
 
-    await ctx.send(f"Average unweighted UR of {user_name}'s {mode} scores: {sum(unstable_rate_list)/len(unstable_rate_list):.2f}\n"
-                   f"Average weighted UR of {user_name}'s {mode} scores: {geosum(unstable_rate_list) / (20 * (1 - 0.95**100)):.2f}")
+    await ctx.send(f"Average weighted UR of {user_name}'s {mode} scores: {geosum(unstable_rate_list) / (20 * (1 - 0.95**100)):.2f}\n"
+                   f"Average unweighted UR of {user_name}'s {mode} scores: {sum(unstable_rate_list)/len(unstable_rate_list):.2f}")
 
 
 @bot.event
