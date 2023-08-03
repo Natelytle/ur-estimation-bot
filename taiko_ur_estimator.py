@@ -1,6 +1,7 @@
 from scipy.optimize import minimize_scalar
 from math import erfc, log, pi, isinf, log1p, exp
 from ossapi.models import Score
+from ossapi.mod import Mod
 
 
 def log_erfc(x):
@@ -22,7 +23,7 @@ def log_diff(first_log, second_log):
 def unstable_rate(
         j: Score.statistics,
         beatmap: Score.beatmap,
-        mods: str
+        mods: Mod
 ) -> float:
     n_judgements = j.count_300 + j.count_100
 
@@ -31,16 +32,16 @@ def unstable_rate(
 
     od = beatmap.accuracy
 
-    if "HR" in mods:
+    if Mod.HR in mods:
         od = min(od * 1.4, 10)
-    elif "EZ" in mods:
+    elif Mod.EZ in mods:
         od = od * 0.5
 
     multiplier = 1
 
-    if "DT" in mods:
+    if Mod.DT in mods:
         multiplier = 2 / 3.0
-    elif "HT" in mods:
+    elif Mod.HT in mods:
         multiplier = 4 / 3.0
 
     # We need the size of every hit window in order to calculate deviation accurately.
